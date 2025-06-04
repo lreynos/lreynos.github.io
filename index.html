@@ -1,10 +1,158 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>My First Website</title>
-  </head>
-  <body>
-    <h1>Hello, world!</h1>
-    <p>This is working correctly!</p>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lucas Reynoso</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: monospace;
+      color: white;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 1rem 2rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      z-index: 2;
+      background: rgba(0, 0, 0, 0.4);
+      gap: 3rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+      font-size: 1rem;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.9);
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 3;
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 0.5rem 1rem;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem 2rem 2rem;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .profile-pic {
+      margin-right: 2rem;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+
+  <div class="header">
+    <div>Lucas Reynoso</div>
+    <div class="nav-links">
+      <a href="research.html">Research</a>
+      <a href="publications.html">Publications</a>
+      <a href="talks.html">Talks</a>
+      <a href="portfolio.html">Portfolio</a>
+      <div class="dropdown">
+        <a href="#">Other ▾</a>
+        <div class="dropdown-content">
+          <a href="cv.html">CV</a>
+          <a href="contact.html">Contact Info</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <img src="placeholder.jpg" alt="Profile picture of Lucas Reynoso" class="profile-pic">
+  </div>
+
+  <script>
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    let w, h;
+
+    function initStars() {
+      stars = [];
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      for (let i = 0; i < 200; i++) {
+        stars.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          size: Math.random() * 2,
+          speed: Math.random() * 0.5 + 0.1
+        });
+      }
+    }
+
+    function animateStars() {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = '#fff';
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+        star.y += star.speed;
+        if (star.y > h) {
+          star.y = 0;
+          star.x = Math.random() * w;
+        }
+      }
+      requestAnimationFrame(animateStars);
+    }
+
+    window.addEventListener('resize', initStars);
+    initStars();
+    animateStars();
+  </script>
+</body>
 </html>
