@@ -4,18 +4,32 @@
   <meta charset="UTF-8">
   <title>Lucas Reynoso</title>
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
-      overflow-x: hidden;
+      overflow: hidden;
       font-family: monospace;
+      background: black;
       color: white;
+      height: 100%;
     }
 
     canvas {
       position: fixed;
       top: 0;
       left: 0;
+    }
+
+    #starfield {
+      z-index: -2;
+    }
+
+    #ceresCanvas {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      image-rendering: pixelated;
+      display: none;
       z-index: -1;
     }
 
@@ -46,133 +60,97 @@
     .nav-links a {
       color: white;
       text-decoration: none;
-    }
-
-    .home-link {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1.25rem;
-    }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: rgba(0, 0, 0, 0.9);
-      min-width: 160px;
-      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-      z-index: 3;
-    }
-
-    .dropdown-content a {
-      display: block;
-      padding: 0.5rem 1rem;
-    }
-
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-
-    .content {
-      position: relative;
-      z-index: 1;
-      padding: 6rem 2rem 2rem 2rem;
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      justify-content: flex-start;
-      gap: 2rem;
-    }
-
-    .info-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    .info-list li {
-      display: flex;
-      align-items: center;
-    }
-
-    .info-list a {
-      color: white;
-      text-decoration: none;
-    }
-
-    .info-list img {
-      width: 1em;
-      height: 1em;
-      margin-right: 0.5rem;
-    }
-
-    .profile-pic {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid white;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+
   <canvas id="starfield"></canvas>
+  <canvas id="ceresCanvas" width="300" height="300"></canvas>
 
   <div class="header">
-    <div><a href="/" class="home-link">Lucas Reynoso</a></div>
+    <div><strong>Lucas Reynoso</strong></div>
     <div class="nav-links">
-      <a href="research.html">Research</a>
-      <a href="publications.html">Publications</a>
-      <a href="talks.html">Talks</a>
-      <a href="portfolio.html">Portfolio</a>
-      <div class="dropdown">
-        <a href="#">Other ▾</a>
-        <div class="dropdown-content">
-          <a href="cv.html">CV</a>
-          <a href="contact.html">Contact Info</a>
-        </div>
-      </div>
+      <a id="researchLink">Research</a>
+      <a href="#">Publications</a>
+      <a href="#">Talks</a>
+      <a href="#">Portfolio</a>
+      <div><a href="#">Other ▾</a></div>
     </div>
   </div>
 
-  <div class="content">
-    <img src="placeholder.jpg" alt="Profile picture of Lucas Reynoso" class="profile-pic">
-    <ul class="info-list">
-      <li>📍 Tempe, AZ</li>
-      <li>📚 Arizona State University</li>
-      <li>✉️ <a href="mailto:lrreynos@asu.edu">lrreynos@asu.edu</a></li>
-      <li><img src="orcid.svg" alt="ORCID logo"> <a href="https://orcid.org/0009-0005-0602-3136">ORCID</a></li>
-    </ul>
-  </div>
-
   <script>
-    const canvas = document.getElementById('starfield');
-    const ctx = canvas.getContext('2d');
-    let stars = [];
-    let w, h;
+    // === STARFIELD ANIMATION ===
+    const starCanvas = document.getElementById('starfield');
+    const starCtx = starCanvas.getContext('2d');
+    starCanvas.width = window.innerWidth;
+    starCanvas.height = window.innerHeight;
 
-    function initStars() {
-      stars = [];
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-      for (let i = 0; i < 200; i++) {
-        stars.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          size: Math.random() * 2,
-          speed: Math.random() * 0.5 + 0.1
-        });
+    const stars = Array.from({ length: 200 }, () => ({
+      x: Math.random() * starCanvas.width,
+      y: Math.random() * starCanvas.height,
+      radius: Math.random() * 1.2,
+      alpha: Math.random(),
+      delta: Math.random() * 0.02
+    }));
+
+    function drawStarfield() {
+      starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+      for (let star of stars) {
+        star.alpha += star.delta;
+        if (star.alpha <= 0 || star.alpha >= 1) star.delta = -star.delta;
+        starCtx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+        starCtx.beginPath();
+        starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        starCtx.fill();
       }
+      requestAnimationFrame(drawStarfield);
+    }
+    drawStarfield();
+
+    // === CERES SPIN/ZOOM ===
+    const researchLink = document.getElementById('researchLink');
+    const ceresCanvas = document.getElementById('ceresCanvas');
+    const ceresCtx = ceresCanvas.getContext('2d');
+    const ceresImage = new Image();
+    ceresImage.src = 'PATH_TO_IMAGE/pixel_ceres.png'; // <-- Update this
+
+    let angle = 0;
+    let scale = 1;
+    let zooming = true;
+
+    function animateCeres() {
+      ceresCtx.clearRect(0, 0, ceresCanvas.width, ceresCanvas.height);
+      ceresCtx.save();
+      ceresCtx.translate(ceresCanvas.width / 2, ceresCanvas.height / 2);
+      ceresCtx.scale(scale, scale);
+      ceresCtx.rotate(angle);
+      ceresCtx.drawImage(ceresImage, -ceresImage.width / 2, -ceresImage.height / 2);
+      ceresCtx.restore();
+
+      angle += 0.01;
+      if (zooming) {
+        if (scale < 3) {
+          scale += 0.01;
+        } else {
+          zooming = false;
+        }
+      }
+
+      requestAnimationFrame(animateCeres);
     }
 
-    function animateStars() {
-      ctx.fillS
+    researchLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      ceresCanvas.style.display = 'block';
+      ceresCanvas.width = 600;
+      ceresCanvas.height = 600;
+      scale = 1;
+      angle = 0;
+      zooming = true;
+      animateCeres();
+    });
+  </script>
+</body>
+</html>
