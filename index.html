@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Lucas Reynoso</title>
-  <style>      
+  <style>
     body {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        font-family: monospace;
-        color: white;
-      }
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-family: monospace;
+      color: white;
+    }
 
     canvas {
       position: fixed;
@@ -49,10 +49,12 @@
     }
 
     .home-link {
-      color: inherit;
+      color: white;
       text-decoration: none;
+      font-weight: bold;
+      font-size: 1.25rem;
     }
-    
+
     .dropdown {
       position: relative;
       display: inline-block;
@@ -81,12 +83,13 @@
       z-index: 1;
       padding: 6rem 2rem 2rem 2rem;
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 2rem;
     }
-    
+
     .info-list {
-      width: 150px;
       list-style: none;
       margin: 0;
       padding: 0;
@@ -113,7 +116,6 @@
     }
 
     .profile-pic {
-      margin: 0 0 1rem 0;
       width: 200px;
       height: 200px;
       border-radius: 50%;
@@ -126,7 +128,7 @@
   <canvas id="starfield"></canvas>
 
   <div class="header">
-    <div><a href="index.html" class="home-link">Lucas Reynoso</a></div>
+    <div><a href="/" class="home-link">Lucas Reynoso</a></div>
     <div class="nav-links">
       <a href="research.html">Research</a>
       <a href="publications.html">Publications</a>
@@ -173,25 +175,4 @@
     }
 
     function animateStars() {
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = '#fff';
-      for (let star of stars) {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fill();
-        star.y += star.speed;
-        if (star.y > h) {
-          star.y = 0;
-          star.x = Math.random() * w;
-        }
-      }
-      requestAnimationFrame(animateStars);
-    }
-
-    window.addEventListener('resize', initStars);
-    initStars();
-    animateStars();
-  </script>
-</body>
-</html>
+      ctx.fillS
