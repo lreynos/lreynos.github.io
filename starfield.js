@@ -15,8 +15,7 @@ function initStars() {
       y: Math.random() * h,
       size: Math.random() * 1.5 + 0.5,
       speed: Math.random() * 0.3 + 0.05,
-      color: getStarColor(),
-      twinkle: Math.random() * Math.PI * 2
+      color: getStarColor()
     });
   }
 }
@@ -30,9 +29,7 @@ function drawStars() {
   ctx.clearRect(0, 0, w, h);
 
   for (let star of stars) {
-    star.twinkle += 0.05;
-    let brightness = 0.5 + 0.5 * Math.sin(star.twinkle); // 0 to 1
-    ctx.fillStyle = hexWithAlpha(star.color, brightness);
+    ctx.fillStyle = star.color;
     ctx.beginPath();
     ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
     ctx.fill();
@@ -43,13 +40,6 @@ function drawStars() {
       star.x = Math.random() * w;
     }
   }
-}
-
-function hexWithAlpha(hex, alpha) {
-  let r = parseInt(hex.substr(1, 2), 16);
-  let g = parseInt(hex.substr(3, 2), 16);
-  let b = parseInt(hex.substr(5, 2), 16);
-  return `rgba(${r},${g},${b},${alpha.toFixed(2)})`;
 }
 
 function createShootingStar() {
@@ -72,7 +62,7 @@ function drawShootingStars() {
     ctx.lineTo(s.x - s.length, s.y + s.length * 0.5);
     ctx.stroke();
 
-    s.x += s.speed * -1;
+    s.x -= s.speed;
     s.y += s.speed * 0.5;
 
     if (s.x < -s.length || s.y > h + s.length) {
